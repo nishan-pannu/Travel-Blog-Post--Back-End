@@ -16,6 +16,9 @@ module MyWebsiteBackend
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    config.action_cable = ActiveSupport::OrderedOptions.new
+    config.action_cable.mount_path = nil
+
     config.api_only = true
 
     config.middleware.use ActionDispatch::Cookies
