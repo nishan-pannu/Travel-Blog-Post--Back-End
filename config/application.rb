@@ -18,6 +18,8 @@ module MyWebsiteBackend
 
     config.action_cable = ActiveSupport::OrderedOptions.new
     config.action_cable.mount_path = nil
+    config.active_job.queue_adapter = :inline
+
 
     config.api_only = true
 
