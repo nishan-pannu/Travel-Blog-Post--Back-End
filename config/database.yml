@@ -15,7 +15,11 @@ production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
   
-# Add this cable configuration for production
+# Add both cable AND queue configurations for production
 cable:
+  adapter: postgresql
+  url: <%= ENV["DATABASE_URL"] %>
+
+queue:
   adapter: postgresql
   url: <%= ENV["DATABASE_URL"] %>
