@@ -5,12 +5,17 @@ default: &default
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  database: storage/development.sqlite3
 
 test:
   <<: *default
-  database: db/test.sqlite3
+  database: storage/test.sqlite3
 
 production:
   <<: *default
-  database: db/production.sqlite3
+  url: <%= ENV["DATABASE_URL"] %>
+  
+# Add this cable configuration for production
+cable:
+  adapter: postgresql
+  url: <%= ENV["DATABASE_URL"] %>
