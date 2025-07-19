@@ -7,6 +7,35 @@ class Api::V1::PostsController < ApplicationController
         render json: @posts.map { |post| post_summary(post) }
     end
 
+    def like
+        @post = Post.find(params[:id])
+        
+        if current_user.likes.find_by(post: @post)
+          render json: { error: 'Already liked' }, status: :unprocessable_entity
+        else
+          @post.likes.create(user: current_user)
+          render json: { 
+            like_count: @post.like_count,
+            liked: true 
+          }
+        end
+      end
+      
+      def unlike
+        @post = Post.find(params[:id])
+        like = current_user.likes.find_by(post: @post)
+
+        if like
+            like.destroy
+            render json: { 
+              like_count: @post.like_count,
+              liked: false 
+            }
+        else
+            render json: { error: 'Not liked' }, status: :unprocessable_entity
+        end
+    end
+
     def search
         query = params[:q]
         @posts = Post.all
@@ -25,13 +54,21 @@ class Api::V1::PostsController < ApplicationController
     # find one post by its ID
     # render post as json
     def show
-        post = Post.find_by(id: params[:id])
-        if post.nil?
-            render json: { error: 'Post not found' }, status: 404
-        else
-            render json: post_summary(post)
-        end
-    end
+        @post = Post.find(params[:id])
+        render json: {
+          id: @post.id,
+          title: @post.title,
+          author: @post.user.name || 'Anonymous',
+          author_id: @post.user.id,
+          intro: @post.intro,
+          picture_url: @post.picture_url,
+          trip_date: @post.trip_date,
+          created_at: @post.created_at,
+          like_count: @post.like_count,
+          comment_count: @post.comment_count,
+          liked_by_current_user: current_user ? @post.liked_by?(current_user) : false
+        }
+      end
 
     # create a new post with params and save
     # render as json

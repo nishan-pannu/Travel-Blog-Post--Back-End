@@ -29,6 +29,14 @@ Rails.application.routes.draw do
         resource :ratings, only: [:create, :show, :update, :destroy]
       end
 
+      resources :posts do
+        resources :comments, only: [:index, :create, :destroy]
+        member do
+          post 'like'
+          delete 'unlike'
+        end
+      end
+
     end
   end
 

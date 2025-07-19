@@ -14,14 +14,30 @@ class Post < ApplicationRecord
   # this post belongs to only one user
   belongs_to :user
 
+   has_many :likes, dependent: :destroy
+   has_many :comments, dependent: :destroy
+
    # one post can have many days
    has_many :days, dependent: :destroy
 
    # one day can have one rating
    has_one :rating, dependent: :destroy
 
+   
 
+   def like_count
+    likes.count
+   end
 
+   def comment_count
+    comments.count
+   end
+
+  def liked_by?(user)
+    return false unless user
+    likes.exists?(user: user)
+  end
+  
 
 
    # VALIDATIONS
